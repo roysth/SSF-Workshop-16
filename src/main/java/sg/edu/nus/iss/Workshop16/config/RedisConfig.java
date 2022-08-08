@@ -17,6 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import sg.edu.nus.iss.Workshop16.model.Mastermind;
 
+//STANDARD CONFIG CODE IF USING REDIS + JSON
 @Configuration
 public class RedisConfig {
     private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
@@ -30,16 +31,19 @@ public class RedisConfig {
     @Value("${spring.redis.password}")
     private String redisPassword;
 
-    @Value("${spring.redis.database}")
+    @Value("${spring.redis.database}") //optional. Used in application.properties
     private String redisDatabase;
 
-    @Bean(name = "games")
+    //giving the RedisTemplate that is used here a name, called "games"
+    //used in Service - BoardGamesRedis
+    @Bean(name = "games") 
     @Scope("singleton")
     public RedisTemplate<String, Mastermind> redisTemplate() {
         final RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisHost);
         config.setPort(redisPort.get());
         config.setPassword(redisPassword);
+        //****required if using JSON files
         Jackson2JsonRedisSerializer jackson2JsonJsonSerializer = new Jackson2JsonRedisSerializer(Mastermind.class);
 
         final JedisClientConfiguration jedisClient = JedisClientConfiguration.builder().build();

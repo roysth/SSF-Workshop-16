@@ -11,18 +11,22 @@ import org.springframework.stereotype.Service;
 
 import sg.edu.nus.iss.Workshop16.model.Mastermind;
 
+//@Service usually contains all the methods eg save, delete, update, findById
 @Service
 public class BoardGameRedis implements BoardGameRepo {
     private static final Logger logger = LoggerFactory.getLogger(BoardGameRedis.class);
 
     @Autowired
+    //Called the RedisTempalte called "games"
     @Qualifier("games")
     RedisTemplate<String, Mastermind> redisTemplate;
 
     @Override
     public int save(final Mastermind ctc) {
         logger.info("Save mastermind > " + logger);
+        //set is used as the document is saved into redis
         redisTemplate.opsForValue().set(ctc.getId(), ctc);
+        //to check
         Mastermind result = (Mastermind) redisTemplate.opsForValue().get(ctc.getId());
         if (result != null)
             return 1;
